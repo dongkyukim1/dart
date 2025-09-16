@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const colors = {
-  warning: "linear-gradient(60deg, #ffa726, #fb8c00)",
-  success: "linear-gradient(60deg, #66bb6a, #43a047)", 
-  danger: "linear-gradient(60deg, #ef5350, #e53935)",
-  info: "linear-gradient(60deg, #26c6da, #00acc1)",
-  primary: "linear-gradient(60deg, #ab47bc, #8e24aa)",
-  rose: "linear-gradient(60deg, #ec407a, #d81b60)"
+  warning: "#e53e3e",    // 차분한 빨간색
+  success: "#38a169",    // 차분한 초록색
+  danger: "#e53e3e",     // 경고용 빨간색
+  info: "#3182ce",       // 차분한 파란색
+  primary: "#2d3748",    // 다크 그레이
+  rose: "#805ad5"        // 차분한 보라색
 };
 
 const StyledCardHeader = styled.div`
@@ -22,17 +22,11 @@ const StyledCardHeader = styled.div`
 
   ${props => props.color && `
     margin: -20px 15px 0;
-    padding: 15px;
+    padding: 20px;
     color: #ffffff;
-    border-radius: 3px;
-    box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(${
-      props.color === 'warning' ? '255, 152, 0' :
-      props.color === 'success' ? '76, 175, 80' :
-      props.color === 'danger' ? '244, 67, 54' :
-      props.color === 'info' ? '0, 188, 212' :
-      props.color === 'primary' ? '156, 39, 176' :
-      props.color === 'rose' ? '233, 30, 99' : '0, 0, 0'
-    }, 0.4);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid rgba(255, 255, 255, 0.3);
   `}
 
   ${props => props.stats && `
@@ -49,20 +43,23 @@ const StyledCardHeader = styled.div`
     color: #ffffff;
     margin-top: 0px;
     min-height: auto;
-    font-weight: 300;
-    font-family: 'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-    margin-bottom: 3px;
+    font-weight: 600;
+    font-family: 'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    margin-bottom: 8px;
     text-decoration: none;
-    font-size: 1.3rem;
-    line-height: 1.4em;
+    font-size: 1.1rem;
+    line-height: 1.3em;
+    letter-spacing: -0.025em;
   }
 
   & p {
-    color: rgba(255, 255, 255, 0.62);
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
-    font-size: 14px;
+    font-size: 0.875rem;
     margin-top: 0;
     margin-bottom: 0;
+    font-family: 'Pretendard-Medium', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 500;
   }
 `;
 

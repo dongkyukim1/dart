@@ -9,21 +9,24 @@ const StyledCardBody = styled.div`
   position: relative;
 
   & h4 {
-    font-weight: 300;
-    line-height: 1.5em;
-    color: #3c4858;
+    font-weight: 600;
+    line-height: 1.4em;
+    color: #2d3748;
     margin-top: 0px;
-    margin-bottom: 3px;
-    font-family: 'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    margin-bottom: 8px;
+    font-family: 'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-size: 1.1rem;
   }
 
   & p {
-    color: #999999;
+    color: #4a5568;
     margin: 0;
-    font-size: 14px;
+    font-size: 0.875rem;
     margin-top: 0;
-    padding-top: 10px;
+    padding-top: 12px;
     margin-bottom: 0;
+    line-height: 1.6;
+    font-family: 'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif;
   }
 `;
 

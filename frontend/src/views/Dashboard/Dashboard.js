@@ -6,17 +6,14 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faBuilding, 
-  faTools, 
-  faSyncAlt, 
-  faStar,
-  faMicrochip,
-  faCar,
-  faBolt
+  faDatabase, 
+  faChartLine, 
+  faShieldAlt,
+  faFileText,
+  faSearch,
+  faUsers,
+  faClipboardCheck
 } from '@fortawesome/free-solid-svg-icons';
-import { 
-  faApple,
-  faGoogle
-} from '@fortawesome/free-brands-svg-icons';
 
 // Material Dashboard Components
 import GridContainer from '../../components/Grid/GridContainer';
@@ -28,63 +25,137 @@ import CardBody from '../../components/Card/CardBody';
 import CardFooter from '../../components/Card/CardFooter';
 
 const DashboardContainer = styled.div`
-  /* No additional styling needed - content area styling handled by layout */
+  background: #fafbfc;
+  min-height: 100vh;
 `;
 
 const PageTitle = styled.h1`
-  color: var(--text-primary);
+  color: #1a365d;
   margin-top: -10px;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   text-align: center;
-  font-size: var(--font-3xl);
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
   padding-bottom: 0;
+  font-family: 'Pretendard-SemiBold', -apple-system, BlinkMacSystemFont, sans-serif;
 `;
 
 const StatsText = styled.div`
-  color: var(--text-tertiary);
+  color: #718096;
   display: inline-flex;
-  font-size: var(--font-xs);
+  font-size: 0.875rem;
   line-height: 1.5;
   align-items: center;
   font-weight: 500;
+  font-family: 'Pretendard-Medium', sans-serif;
   
   & svg {
-    top: 1px;
-    width: 14px;
-    height: 14px;
-    position: relative;
-    margin-right: 4px;
-    margin-left: 2px;
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    color: #4a5568;
   }
 `;
 
 const CardCategory = styled.p`
-  color: var(--text-light);
+  color:rgb(0, 255, 76) !important;
   margin: 0;
-  font-size: var(--font-sm);
-  font-weight: 500;
+  font-size: 0.875rem;
+  font-weight: 600;
   margin-top: 0;
   padding-top: 0.75rem;
   margin-bottom: 0;
   text-transform: uppercase;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.5px;
+  font-family: 'Pretendard-SemiBold', sans-serif;
 `;
 
 const CardTitle = styled.h3`
-  color: var(--text-primary);
+  color:rgb(250, 250, 250) !important;
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
-  font-size: var(--font-2xl);
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1.2;
+  font-family: 'Pretendard-Bold', sans-serif;
   
   & small {
-    color: var(--text-tertiary);
-    font-weight: 500;
-    font-size: var(--font-lg);
+    color: #4a5568 !important;
+    font-weight: 600;
+    font-size: 1.125rem;
     margin-left: 0.25rem;
+  }
+`;
+
+const ServiceButton = styled.button`
+  background: #2d3748;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: 'Pretendard-Medium', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-width: 120px;
+  
+  &:hover {
+    background: #1a202c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(45, 55, 72, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
+const CompanyCard = styled.div`
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+`;
+
+const CompanyName = styled.div`
+  font-family: 'Pretendard-SemiBold', sans-serif;
+  font-size: 0.95rem;
+  color: #2d3748;
+  margin-bottom: 4px;
+`;
+
+const CompanySector = styled.div`
+  font-size: 0.8rem;
+  color: #718096;
+  font-family: 'Pretendard-Regular', sans-serif;
+`;
+
+const RecentDisclosure = styled.div`
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  background: #ffffff;
+  
+  &:hover {
+    border-color: #2d3748;
+    box-shadow: 0 2px 8px rgba(45, 55, 72, 0.1);
+  }
+  
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
@@ -121,48 +192,48 @@ const Dashboard = () => {
       id: 1,
       title: '대량보유 상황보고',
       description: '주식등의 대량보유상황보고서 내에 대량보유 상황보고 정보를 제공합니다.',
-      icon: '📊',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      icon: faUsers,
+      color: 'primary',
       status: 'active'
     },
     {
       id: 2,
       title: '임원ㆍ주요주주 소유보고',
       description: '임원ㆍ주요주주특정증권등 소유상황보고서 내에 임원ㆍ주요주주 소유보고 정보를 제공합니다.',
-      icon: '👥',
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      icon: faClipboardCheck,
+      color: 'info',
       status: 'active'
     },
     {
       id: 4,
       title: '단일회사 전체 재무제표',
       description: '상장법인(유가증권, 코스닥) 및 주요 비상장법인이 제출한 정기보고서 내에 XBRL재무제표의 모든계정과목을 제공합니다.',
-      icon: '📋',
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      icon: faFileText,
+      color: 'success',
       status: 'active'
     },
     {
       id: 5,
       title: 'XBRL택사노미재무제표양식',
       description: '금융감독원 회계포탈에서 제공하는 IFRS 기반 XBRL 재무제표 공시용 표준계정과목체계를 제공합니다.',
-      icon: '📄',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      icon: faDatabase,
+      color: 'warning',
       status: 'active'
     },
     {
       id: 6,
       title: '단일회사 주요 재무지표',
       description: '상장법인(유가증권, 코스닥) 및 주요 비상장법인이 제출한 정기보고서 내에 XBRL재무제표의 주요 재무지표를 제공합니다.',
-      icon: '📈',
-      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      icon: faChartLine,
+      color: 'rose',
       status: 'active'
     },
     {
       id: 7,
       title: '다중회사 주요 재무지표',
       description: '상장법인(유가증권, 코스닥) 및 주요 비상장법인이 제출한 정기보고서 내에 XBRL재무제표의 주요 재무지표를 제공합니다.(대상법인 복수조회 가능)',
-      icon: '📊',
-      gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+      icon: faSearch,
+      color: 'primary',
       status: 'active'
     }
   ];
@@ -187,8 +258,8 @@ const Dashboard = () => {
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
-            <CardHeader color="warning" stats icon>
-              <CardIcon color="warning">
+            <CardHeader color="primary" stats icon>
+              <CardIcon color="primary">
                 <FontAwesomeIcon icon={faBuilding} style={{fontSize: '24px'}} />
               </CardIcon>
               <CardCategory>등록된 기업</CardCategory>
@@ -198,44 +269,8 @@ const Dashboard = () => {
             </CardHeader>
             <CardFooter stats>
               <StatsText>
-                <span style={{fontSize: '16px', marginRight: '5px'}}>📊</span>
+                <FontAwesomeIcon icon={faBuilding} />
                 DART 등록 기업
-              </StatsText>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="success" stats icon>
-              <CardIcon color="success">
-                <FontAwesomeIcon icon={faTools} style={{fontSize: '24px'}} />
-              </CardIcon>
-              <CardCategory>제공 서비스</CardCategory>
-              <CardTitle>7</CardTitle>
-            </CardHeader>
-            <CardFooter stats>
-              <StatsText>
-                <span style={{fontSize: '16px', marginRight: '5px'}}>⚡</span>
-                DART API 서비스
-              </StatsText>
-            </CardFooter>
-          </Card>
-        </GridItem>
-        
-        <GridItem xs={12} sm={6} md={3}>
-          <Card>
-            <CardHeader color="danger" stats icon>
-              <CardIcon color="danger">
-                <FontAwesomeIcon icon={faSyncAlt} style={{fontSize: '24px'}} />
-              </CardIcon>
-              <CardCategory>데이터 업데이트</CardCategory>
-              <CardTitle>실시간</CardTitle>
-            </CardHeader>
-            <CardFooter stats>
-              <StatsText>
-                <span style={{fontSize: '16px', marginRight: '5px'}}>⏰</span>
-                실시간 동기화
               </StatsText>
             </CardFooter>
           </Card>
@@ -245,14 +280,50 @@ const Dashboard = () => {
           <Card>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
-                <FontAwesomeIcon icon={faStar} style={{fontSize: '24px'}} />
+                <FontAwesomeIcon icon={faDatabase} style={{fontSize: '24px'}} />
+              </CardIcon>
+              <CardCategory>제공 서비스</CardCategory>
+              <CardTitle>7</CardTitle>
+            </CardHeader>
+            <CardFooter stats>
+              <StatsText>
+                <FontAwesomeIcon icon={faDatabase} />
+                DART API 서비스
+              </StatsText>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        
+        <GridItem xs={12} sm={6} md={3}>
+          <Card>
+            <CardHeader color="success" stats icon>
+              <CardIcon color="success">
+                <FontAwesomeIcon icon={faChartLine} style={{fontSize: '24px'}} />
+              </CardIcon>
+              <CardCategory>데이터 업데이트</CardCategory>
+              <CardTitle>실시간</CardTitle>
+            </CardHeader>
+            <CardFooter stats>
+              <StatsText>
+                <FontAwesomeIcon icon={faChartLine} />
+                실시간 동기화
+              </StatsText>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        
+        <GridItem xs={12} sm={6} md={3}>
+          <Card>
+            <CardHeader color="warning" stats icon>
+              <CardIcon color="warning">
+                <FontAwesomeIcon icon={faShieldAlt} style={{fontSize: '24px'}} />
               </CardIcon>
               <CardCategory>서비스 운영</CardCategory>
               <CardTitle>24/7</CardTitle>
             </CardHeader>
             <CardFooter stats>
               <StatsText>
-                <span style={{fontSize: '16px', marginRight: '5px'}}>🔄</span>
+                <FontAwesomeIcon icon={faShieldAlt} />
                 연중무휴 서비스
               </StatsText>
             </CardFooter>
@@ -262,73 +333,56 @@ const Dashboard = () => {
 
       {/* DART API 서비스 카드들 */}
       <GridContainer>
-        {dartServices.map((service, index) => (
+        {dartServices.map((service) => (
           <GridItem xs={12} sm={6} md={4} key={service.id}>
             <Card>
-              <CardHeader color={['primary', 'info', 'success', 'warning', 'danger', 'rose'][index % 6]}>
+              <CardHeader color={service.color}>
                 <h4 style={{
                   color: '#ffffff',
                   marginTop: '0px',
                   minHeight: 'auto',
-                  fontWeight: '300',
-                  fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-                  marginBottom: '3px',
+                  fontWeight: '600',
+                  fontFamily: "'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                  marginBottom: '8px',
                   textDecoration: 'none',
                   fontSize: '1.1rem',
-                  lineHeight: '1.4em'
+                  lineHeight: '1.3em',
+                  letterSpacing: '-0.025em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
                 }}>
-                  {service.icon} {service.title}
+                  <FontAwesomeIcon icon={service.icon} style={{fontSize: '1rem'}} />
+                  {service.title}
                 </h4>
                 <p style={{
-                  color: 'rgba(255, 255, 255, 0.62)',
+                  color: 'rgba(255, 255, 255, 0.85)',
                   margin: '0',
-                  fontSize: '12px',
+                  fontSize: '0.875rem',
                   marginTop: '0',
-                  marginBottom: '0'
+                  marginBottom: '0',
+                  fontFamily: "'Pretendard-Medium', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                  fontWeight: '500'
                 }}>
                   DART API 서비스
                 </p>
               </CardHeader>
               <CardBody>
                 <p style={{
-                  color: '#999999',
+                  color: '#4a5568',
                   margin: '0',
-                  fontSize: '14px',
+                  fontSize: '0.875rem',
                   marginTop: '0',
-                  paddingTop: '10px',
-                  marginBottom: '15px',
-                  lineHeight: '1.5'
+                  paddingTop: '16px',
+                  marginBottom: '24px',
+                  lineHeight: '1.6',
+                  fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif"
                 }}>
                   {service.description}
                 </p>
-                <button
-                  onClick={() => handleServiceClick(service.id)}
-                  style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '10px 20px',
-                    borderRadius: '6px',
-                    fontFamily: "'Pretendard-Medium', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-                    fontSize: '0.85rem',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    fontWeight: '500',
-                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
-                  }}
-                >
-                  바로가기 →
-                </button>
+                <ServiceButton onClick={() => handleServiceClick(service.id)}>
+                  서비스 이용하기
+                </ServiceButton>
               </CardBody>
             </Card>
           </GridItem>
@@ -339,26 +393,33 @@ const Dashboard = () => {
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <Card>
-            <CardHeader color="warning">
+            <CardHeader color="primary">
               <h4 style={{
                 color: '#ffffff',
                 marginTop: '0px',
                 minHeight: 'auto',
-                fontWeight: '300',
-                fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-                marginBottom: '3px',
+                fontWeight: '600',
+                fontFamily: "'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                marginBottom: '8px',
                 textDecoration: 'none',
-                fontSize: '1.3rem',
-                lineHeight: '1.4em'
+                fontSize: '1.1rem',
+                lineHeight: '1.3em',
+                letterSpacing: '-0.025em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}>
-                🏢 인기 기업 바로가기
+                <FontAwesomeIcon icon={faBuilding} style={{fontSize: '1rem'}} />
+                인기 기업 분석
               </h4>
               <p style={{
-                color: 'rgba(255, 255, 255, 0.62)',
+                color: 'rgba(255, 255, 255, 0.85)',
                 margin: '0',
-                fontSize: '14px',
+                fontSize: '0.875rem',
                 marginTop: '0',
-                marginBottom: '0'
+                marginBottom: '0',
+                fontFamily: "'Pretendard-Medium', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                fontWeight: '500'
               }}>
                 주요 상장기업 재무분석
               </p>
@@ -366,58 +427,17 @@ const Dashboard = () => {
             <CardBody>
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                gap: '10px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '12px'
               }}>
-                {popularCompanies.map((company, index) => (
-                  <div key={company.code} style={{
-                    padding: '12px',
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%)',
-                    borderRadius: '8px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: '1px solid rgba(0,0,0,0.05)',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}
-                  onClick={() => navigate(`/financial-analysis?corp_code=${company.code}&corp_name=${encodeURIComponent(company.name)}`)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #f8f9fc 0%, #e9ecf1 100%)';
-                    e.currentTarget.style.transform = 'translateY(-3px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-                  }}>
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: '3px',
-                      background: `linear-gradient(90deg, ${['#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#a8edea'][index % 6]} 0%, ${['#764ba2', '#f5576c', '#00f2fe', '#38f9d7', '#fee140', '#fed6e3'][index % 6]} 100%)`
-                    }}></div>
-                    <div style={{
-                      fontFamily: "'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-                      fontSize: '0.95rem',
-                      color: '#2d3748',
-                      marginBottom: '6px',
-                      marginTop: '4px'
-                    }}>
-                      {company.name}
-                    </div>
-                    <div style={{
-                      fontSize: '0.75rem',
-                      color: '#718096',
-                      fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif"
-                    }}>
-                      {company.sector}
-                    </div>
-                  </div>
+                {popularCompanies.map((company) => (
+                  <CompanyCard 
+                    key={company.code}
+                    onClick={() => navigate(`/financial-analysis?corp_code=${company.code}&corp_name=${encodeURIComponent(company.name)}`)}
+                  >
+                    <CompanyName>{company.name}</CompanyName>
+                    <CompanySector>{company.sector}</CompanySector>
+                  </CompanyCard>
                 ))}
               </div>
             </CardBody>
@@ -431,21 +451,28 @@ const Dashboard = () => {
                 color: '#ffffff',
                 marginTop: '0px',
                 minHeight: 'auto',
-                fontWeight: '300',
-                fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-                marginBottom: '3px',
+                fontWeight: '600',
+                fontFamily: "'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                marginBottom: '8px',
                 textDecoration: 'none',
-                fontSize: '1.3rem',
-                lineHeight: '1.4em'
+                fontSize: '1.1rem',
+                lineHeight: '1.3em',
+                letterSpacing: '-0.025em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}>
-                📋 최근 공시 정보
+                <FontAwesomeIcon icon={faFileText} style={{fontSize: '1rem'}} />
+                최근 공시 정보
               </h4>
               <p style={{
-                color: 'rgba(255, 255, 255, 0.62)',
+                color: 'rgba(255, 255, 255, 0.85)',
                 margin: '0',
-                fontSize: '14px',
+                fontSize: '0.875rem',
                 marginTop: '0',
-                marginBottom: '0'
+                marginBottom: '0',
+                fontFamily: "'Pretendard-Medium', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                fontWeight: '500'
               }}>
                 실시간 업데이트
               </p>
@@ -453,16 +480,20 @@ const Dashboard = () => {
             <CardBody>
               {isLoading && (
                 <div style={{ textAlign: 'center', padding: '2rem' }}>
-                  <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
-                  <div style={{ fontFamily: "'Pretendard-Regular', 'Roboto'", color: '#999999' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#718096' }}>
+                    <FontAwesomeIcon icon={faChartLine} />
+                  </div>
+                  <div style={{ fontFamily: "'Pretendard-Regular', 'Roboto'", color: '#718096', fontSize: '0.875rem' }}>
                     최근 공시 정보를 불러오는 중...
                   </div>
                 </div>
               )}
               {error && (
                 <div style={{ textAlign: 'center', padding: '2rem' }}>
-                  <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>❌</div>
-                  <div style={{ fontFamily: "'Pretendard-Regular', 'Roboto'", color: '#e53e3e' }}>
+                  <div style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#e53e3e' }}>
+                    <FontAwesomeIcon icon={faShieldAlt} />
+                  </div>
+                  <div style={{ fontFamily: "'Pretendard-Regular', 'Roboto'", color: '#e53e3e', fontSize: '0.875rem' }}>
                     데이터를 불러오는 중 오류가 발생했습니다.
                   </div>
                 </div>
@@ -470,26 +501,10 @@ const Dashboard = () => {
               {recentCompanies && recentCompanies.list && (
                 <div>
                   {recentCompanies.list.slice(0, 4).map((company, index) => (
-                    <div key={index} style={{ 
-                      padding: '12px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                      marginBottom: index < 3 ? '10px' : '0',
-                      background: 'rgba(248, 249, 252, 0.5)',
-                      border: '1px solid rgba(0,0,0,0.05)'
-                    }}
-                    onClick={() => navigate(`/financial-analysis?corp_code=${company.corp_code}&corp_name=${encodeURIComponent(company.corp_name)}`)}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(102, 126, 234, 0.1)';
-                      e.currentTarget.style.transform = 'translateX(5px)';
-                      e.currentTarget.style.borderLeft = '3px solid #667eea';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(248, 249, 252, 0.5)';
-                      e.currentTarget.style.transform = 'translateX(0)';
-                      e.currentTarget.style.borderLeft = '1px solid rgba(0,0,0,0.05)';
-                    }}>
+                    <RecentDisclosure 
+                      key={index}
+                      onClick={() => navigate(`/financial-analysis?corp_code=${company.corp_code}&corp_name=${encodeURIComponent(company.corp_name)}`)}
+                    >
                       <div style={{
                         fontFamily: "'Pretendard-SemiBold', 'Roboto', 'Helvetica', 'Arial', sans-serif",
                         fontSize: '0.9rem',
@@ -499,13 +514,17 @@ const Dashboard = () => {
                         {company.corp_name}
                       </div>
                       <div style={{
-                        fontSize: '0.75rem',
+                        fontSize: '0.8rem',
                         color: '#718096',
-                        fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif"
+                        fontFamily: "'Pretendard-Regular', 'Roboto', 'Helvetica', 'Arial', sans-serif",
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}>
-                        📋 {company.report_nm} · {company.rcept_dt}
+                        <FontAwesomeIcon icon={faFileText} style={{fontSize: '0.75rem'}} />
+                        {company.report_nm} · {company.rcept_dt}
                       </div>
-                    </div>
+                    </RecentDisclosure>
                   ))}
                 </div>
               )}

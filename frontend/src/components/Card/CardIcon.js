@@ -3,45 +3,48 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const colors = {
-  warning: "linear-gradient(60deg, #ffa726, #fb8c00)",
-  success: "linear-gradient(60deg, #66bb6a, #43a047)", 
-  danger: "linear-gradient(60deg, #ef5350, #e53935)",
-  info: "linear-gradient(60deg, #26c6da, #00acc1)",
-  primary: "linear-gradient(60deg, #ab47bc, #8e24aa)",
-  rose: "linear-gradient(60deg, #ec407a, #d81b60)"
+  warning: "#e53e3e",    // 차분한 빨간색
+  success: "#38a169",    // 차분한 초록색
+  danger: "#e53e3e",     // 경고용 빨간색
+  info: "#3182ce",       // 차분한 파란색
+  primary: "#2d3748",    // 다크 그레이
+  rose: "#805ad5"        // 차분한 보라색
 };
 
 const StyledCardIcon = styled.div`
   background: ${props => colors[props.color] || colors.primary};
-  border-radius: 3px;
-  padding: 15px;
+  border-radius: 4px;
+  padding: 18px;
   margin-top: -20px;
   margin-right: 15px;
   margin-left: 15px;
   height: 70px;
-  box-shadow: 0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(${
-    props => {
-      const colorMap = {
-        'warning': '255, 152, 0',
-        'success': '76, 175, 80',
-        'danger': '244, 67, 54',
-        'info': '0, 188, 212',
-        'primary': '156, 39, 176',
-        'rose': '233, 30, 99'
-      };
-      return colorMap[props.color] || '156, 39, 176';
-    }
-  }, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 4px;
+    pointer-events: none;
+  }
   
   & .material-icons,
   & svg {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     color: #ffffff;
-    font-size: 36px;
+    font-size: 28px;
+    z-index: 1;
+    position: relative;
   }
 `;
 
