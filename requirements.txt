@@ -4,3 +4,6 @@ httpx
 python-multipart
 python-dotenv
 pydantic
+sqlalchemy
+aiosqlite
+asyncpg

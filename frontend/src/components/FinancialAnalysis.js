@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import HierarchicalFinancials from './HierarchicalFinancials';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { 
@@ -386,7 +387,7 @@ const FinancialAnalysis = () => {
       console.log('corpCode:', corpCode);
       console.log('filters:', filters);
       
-      const response = await axios.post('/api/financial/data', requestData);
+       const response = await axios.post('http://localhost:8000/api/financial/data', requestData);
       console.log('재무데이터 응답:', response.data);
       if (response.data.list && response.data.list.length > 0) {
         console.log('첫 번째 데이터 샘플:', response.data.list[0]);
@@ -490,13 +491,31 @@ const FinancialAnalysis = () => {
   const currentYear = 2024; // 현재 가능한 최신 연도
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
 
-  // 재무데이터에서 사용 가능한 계정명들 추출
+  // 인기 계정명 조회
+  const { data: popularAccounts } = useQuery(
+    'popularAccounts',
+    async () => {
+      const response = await axios.get('http://localhost:8000/api/accounts/popular?limit=100');
+      return response.data.accounts || [];
+    },
+    {
+      staleTime: 30 * 60 * 1000, // 30분간 캐시
+      retry: 1
+    }
+  );
+
+  // 재무데이터에서 사용 가능한 계정명들 추출 (기존 로직 + 인기 계정명)
   const availableAccounts = useMemo(() => {
-    if (!financialData?.list) return [];
+    const localAccounts = financialData?.list ? 
+      financialData.list.map(item => item.account_nm).filter(Boolean) : [];
     
-    const accounts = financialData.list.map(item => item.account_nm).filter(Boolean);
-    return [...new Set(accounts)].sort(); // 중복 제거 및 정렬
-  }, [financialData]);
+    const allAccounts = [...new Set([
+      ...(popularAccounts || []),
+      ...localAccounts
+    ])];
+    
+    return allAccounts.sort();
+  }, [financialData, popularAccounts]);
 
   // 필터링된 재무데이터
   const filteredFinancialData = useMemo(() => {
@@ -596,6 +615,12 @@ const FinancialAnalysis = () => {
           </ButtonGroup>
         </FilterRow>
       </ControlPanel>
+
+      {/* 계층형 재무제표 섹션 */}
+      <HierarchicalFinancials 
+        corpCode={selectedCorpCode} 
+        corpName={selectedCorpName} 
+      />
 
       <ContentGrid>
         <MainContent>

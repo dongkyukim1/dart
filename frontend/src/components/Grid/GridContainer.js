@@ -1,23 +1,25 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-const StyledGridContainer = styled.div`
-  margin: 0 -15px !important;
-  width: unset;
-  display: flex;
-  flex-wrap: wrap;
+const GridWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+    margin-bottom: 15px;
+  }
 `;
 
-export default function GridContainer(props) {
-  const { children, ...rest } = props;
+const GridContainer = ({ children, ...props }) => {
   return (
-    <StyledGridContainer {...rest}>
+    <GridWrapper {...props}>
       {children}
-    </StyledGridContainer>
+    </GridWrapper>
   );
-}
-
-GridContainer.propTypes = {
-  children: PropTypes.node,
 };
+
+export default GridContainer;

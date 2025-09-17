@@ -87,7 +87,7 @@ const Dashboard = () => {
   const { data: recentCompanies, isLoading, error } = useQuery(
     'recentCompanies',
     async () => {
-      const response = await axios.get('/api/company/list');
+      const response = await axios.get('http://localhost:8000/api/company/list');
       return response.data;
     },
     {

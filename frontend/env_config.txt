@@ -1,0 +1,6 @@
+# React 개발 서버 설정 (.env 파일로 복사하세요)
+REACT_APP_API_URL=http://localhost:8000
+GENERATE_SOURCEMAP=false
+BROWSER=none
+WDS_SOCKET_HOST=localhost
+WDS_SOCKET_PORT=3000

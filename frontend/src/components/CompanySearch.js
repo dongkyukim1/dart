@@ -437,7 +437,7 @@ const CompanySearch = () => {
   const { data: searchResults, isLoading, error } = useQuery(
     ['companySearch', searchParams],
     async () => {
-      const response = await axios.post('/api/company/search', searchParams);
+      const response = await axios.post('http://localhost:8000/api/company/search', searchParams);
       return response.data;
     },
     {
@@ -534,12 +534,27 @@ const CompanySearch = () => {
     }
   };
 
-  const executeSearch = (query = searchQuery) => {
-    // 기업명으로 검색하는 경우 (실제로는 DART API에서 기업명 검색을 지원해야 함)
+  const executeSearch = async (query = searchQuery) => {
+    // 기업명으로 검색하는 경우
     if (query) {
-      // 여기서는 기존 검색 로직을 실행
-      setShouldSearch(true);
-      setShowSuggestions(false);
+      try {
+        const response = await axios.post('http://localhost:8000/api/company/search/name', {
+          corp_name: query,
+          corp_cls: searchParams.corp_cls,
+          page_no: 1,
+          page_count: searchParams.page_count
+        });
+        
+        // 검색 결과를 기존 검색 결과로 설정
+        setSearchParams(prev => ({ ...prev, corp_name: query }));
+        setShouldSearch(true);
+        setShowSuggestions(false);
+      } catch (error) {
+        console.error('기업명 검색 오류:', error);
+        // 오류시 기존 검색 방식으로 폴백
+        setShouldSearch(true);
+        setShowSuggestions(false);
+      }
     }
   };
 
